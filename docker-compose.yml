@@ -1,0 +1,67 @@
+# 3-broker Redpanda cluster for the throughput experiments.
+name: hw2-redpanda
+
+x-redpanda-common: &redpanda-common
+  image: redpandadata/redpanda:v24.2.7
+
+services:
+  redpanda-0:
+    <<: *redpanda-common
+    container_name: hw2-redpanda-0
+    hostname: redpanda-0
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=700M
+      - --reserve-memory=0M
+      - --default-log-level=warn
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr=internal://redpanda-0:9092,external://localhost:19092
+      - --rpc-addr=redpanda-0:33145
+      - --advertise-rpc-addr=redpanda-0:33145
+    ports:
+      - "19092:19092"
+
+  redpanda-1:
+    <<: *redpanda-common
+    container_name: hw2-redpanda-1
+    hostname: redpanda-1
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=700M
+      - --reserve-memory=0M
+      - --default-log-level=warn
+      - --seeds=redpanda-0:33145
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19093
+      - --advertise-kafka-addr=internal://redpanda-1:9092,external://localhost:19093
+      - --rpc-addr=redpanda-1:33145
+      - --advertise-rpc-addr=redpanda-1:33145
+    ports:
+      - "19093:19093"
+    depends_on: [redpanda-0]
+
+  redpanda-2:
+    <<: *redpanda-common
+    container_name: hw2-redpanda-2
+    hostname: redpanda-2
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --memory=700M
+      - --reserve-memory=0M
+      - --default-log-level=warn
+      - --seeds=redpanda-0:33145
+      - --kafka-addr=internal://0.0.0.0:9092,external://0.0.0.0:19094
+      - --advertise-kafka-addr=internal://redpanda-2:9092,external://localhost:19094
+      - --rpc-addr=redpanda-2:33145
+      - --advertise-rpc-addr=redpanda-2:33145
+    ports:
+      - "19094:19094"
+    depends_on: [redpanda-0]

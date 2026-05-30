@@ -1,0 +1,18 @@
+# Python env
+.venv/
+__pycache__/
+*.pyc
+
+# Generated dataset (regenerable via src/prepare_video.py)
+data/video/
+data/frames/
+
+# Per-run consumer logs (regenerable); keep results/summary.csv
+results/exp*/
+results/run.log
+
+# LaTeX build dir
+out/
+*.aux
+*.log
+*.out
